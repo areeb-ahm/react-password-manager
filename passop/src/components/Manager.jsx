@@ -2,18 +2,28 @@ import React, { useRef, useState, useEffect } from 'react'
 
 const Manager = () => {
     const eyeRef = useRef();
-    const [form, setform] = useState({site: "", username: "", password: ""});
+    const [form, setform] = useState({ site: "", username: "", password: "" });
     const pass = useRef();
     const [passwordArr, setpasswordArr] = useState([])
 
     useEffect(() => {
-      let passwords = localStorage.getItem("passwords");
+        let passwords = localStorage.getItem("passwords");
+        if (passwords) {
+            try {
+                const parsed = JSON.parse(passwords);
+                // Ensure we only set the state if the result is actually an array
+                if (Array.isArray(parsed)) {
+                    setpasswordArr(parsed);
+                }
+            } catch (error) {
+                console.error("Failed to parse passwords from localStorage:", error);
+                // If it's corrupted, just clear it so it doesn't crash again
+                localStorage.removeItem("passwords");
+            }
+        }
+    }, []);
 
-      if (passwords) {
-        setpasswordArr(JSON.parse(passwords))
-      }
-    }, [])
-    
+
 
     const handleEye = () => {
         // alert("onclick fired")
@@ -26,15 +36,25 @@ const Manager = () => {
         }
     }
 
-    const handleChange = (e) => {
-      setform({...form, [e.target.name]: e.target.value});
+    const handleForm = (e) => {
+        setform({ ...form, [e.target.name]: e.target.value });
     }
 
     const handleSave = () => {
-      setpasswordArr = [...passwordArr, form];
-      localStorage.setItem("passwords", [...passwordArr, form]);
-    }
-    
+        // 1. Create the new updated list first
+        const newPasswords = [...passwordArr, form];
+
+        // 2. Update the UI state
+        setpasswordArr(newPasswords);
+
+        // 3. Update the storage using the exact same list
+        localStorage.setItem("passwords", JSON.stringify(newPasswords));
+
+        // 4. Reset the form so the user can type a new one
+        setform({ site: "", username: "", password: "" });
+    };
+
+
 
     return (
         <>
@@ -54,14 +74,14 @@ const Manager = () => {
 
                 <div className="inputs flex justify-center items-center flex-col gap-3 p-5">
                     <div className="url">
-                        <input value={form.site} name='site' onChange={handleChange} className='bg-slate-300 border-4 border-slate-900 w-full px-2 py-1 rounded-full' type="text" placeholder='Enter website url...' />
+                        <input value={form.site} name='site' onChange={handleForm} className='bg-slate-300 border-4 border-slate-900 w-full px-2 py-1 rounded-full' type="text" placeholder='Enter website url...' />
                     </div>
 
                     <div className="rest-inputs flex justify-center items-center gap-2">
-                        <input value={form.username} name='username' onChange={handleChange} className='bg-slate-300 border-4 border-slate-900 w-full px-2 py-1 rounded-full' type="text" placeholder='Enter username...' />
-                        <input ref={pass} value={form.password} name='password' onChange={handleChange} className='bg-slate-300 border-4 border-slate-900 w-full px-2 py-1 rounded-full' type="text" placeholder='Enter password...' />
+                        <input value={form.username} name='username' onChange={handleForm} className='bg-slate-300 border-4 border-slate-900 w-full px-2 py-1 rounded-full' type="text" placeholder='Enter username...' />
+                        <input ref={pass} value={form.password} name='password' onChange={handleForm} className='bg-slate-300 border-4 border-slate-900 w-full px-2 py-1 rounded-full' type="text" placeholder='Enter password...' />
                         <span onClick={handleEye} className='absolute right-134 cursor-pointer'>
-                            <img ref={eyeRef} width={30} src="eye.svg" alt="show-password" />
+                            <img ref={eyeRef} width={25} src="eye.svg" alt="show-password" />
                         </span>
                     </div>
 
@@ -70,30 +90,39 @@ const Manager = () => {
                             <lord-icon
                                 src="https://cdn.lordicon.com/vjgknpfx.json"
                                 trigger="hover"
-                                style={{ "width": "35px", "height": "35px" }}>
+                                style={{ "width": "30px", "height": "30px" }}>
                             </lord-icon>
                             Save
                         </button>
                     </div>
                 </div>
 
-                <div className="pass-table flex justify-center items-center flex-col">
+                <div className="pass-table flex justify-center items-center flex-col gap-5">
                     <h1 className='text-2xl text-white font-bold'>Your Passwords</h1>
 
-                    <div className="pass-table">
-                        {/* <table>
-                            <tr>
-                                <th>Site</th>
-                                <th>Username</th>
-                                <th>Password</th>
-                                <th>Actions</th>
-                            </tr>
-                            <tr>
-                                <td>Harry</td>
-                                <td>100</td>
-                            </tr>
-                        </table> */}
+                    {passwordArr.length === 0 && <div>No passwords to show</div>}
+
+                    {passwordArr.length != 0 && <div className="pass-table">
+                        <table className="table-auto text-white rounded-md overflow-hidden">
+                            <thead className='bg-slate-900'>
+                                <tr>
+                                    <th className='px-20 py-2'>Site</th>
+                                    <th className='px-20 py-2'>Username</th>
+                                    <th className='px-20 py-2'>Password</th>
+                                </tr>
+                            </thead>
+                            <tbody className='bg-slate-700'>
+                                {passwordArr.map((item, index) => {
+                                    return <tr key={index}>
+                                        <td className='text-center px-20 py-2'>{item.site}</td>
+                                        <td className='text-center px-20 py-2'>{item.username}</td>
+                                        <td className='text-center px-20 py-2'>{item.password}</td>
+                                    </tr>
+                                })}
+                            </tbody>
+                        </table>
                     </div>
+                    }
                 </div>
 
             </div>
