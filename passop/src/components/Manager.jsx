@@ -9,21 +9,9 @@ const Manager = () => {
     useEffect(() => {
         let passwords = localStorage.getItem("passwords");
         if (passwords) {
-            try {
-                const parsed = JSON.parse(passwords);
-                // Ensure we only set the state if the result is actually an array
-                if (Array.isArray(parsed)) {
-                    setpasswordArr(parsed);
-                }
-            } catch (error) {
-                console.error("Failed to parse passwords from localStorage:", error);
-                // If it's corrupted, just clear it so it doesn't crash again
-                localStorage.removeItem("passwords");
-            }
+            setpasswordArr(JSON.parse(passwords));
         }
     }, []);
-
-
 
     const handleEye = () => {
         // alert("onclick fired")
@@ -54,13 +42,21 @@ const Manager = () => {
         setform({ site: "", username: "", password: "" });
     };
 
+    const handleEdit = () => {
+      alert("edit fired");
+    }
+
+    const handleDelete = () => {
+      alert("delete fired");
+    }
+
 
 
     return (
         <>
             {/* <div class="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-size-[14px_24px]"><div class="absolute left-0 right-0 top-0 -z-10 m-auto h-77.5 w-77.5 rounded-full bg-fuchsia-400 opacity-20 blur-[100px]"></div></div> */}
 
-            <div className="manager bg-slate-600 h-dvh">
+            <div className="manager bg-slate-600 h-225">
 
                 <div className="main-headline p-5 flex flex-col justify-center items-center text-white font-bold">
                     <h1 className='text-3xl'>
@@ -106,17 +102,30 @@ const Manager = () => {
                         <table className="table-auto text-white rounded-md overflow-hidden">
                             <thead className='bg-slate-900'>
                                 <tr>
-                                    <th className='px-20 py-2'>Site</th>
-                                    <th className='px-20 py-2'>Username</th>
-                                    <th className='px-20 py-2'>Password</th>
+                                    <th className='md:px-20 md:py-2 px-2'>Site</th>
+                                    <th className='md:px-20 md:py-2 px-2'>Username</th>
+                                    <th className='md:px-20 md:py-2 px-2'>Password</th>
+                                    <th className='md:px-20 md:py-2 px-2'>Actions</th>
                                 </tr>
                             </thead>
                             <tbody className='bg-slate-700'>
                                 {passwordArr.map((item, index) => {
                                     return <tr key={index}>
-                                        <td className='text-center px-20 py-2'>{item.site}</td>
-                                        <td className='text-center px-20 py-2'>{item.username}</td>
-                                        <td className='text-center px-20 py-2'>{item.password}</td>
+                                        <td className='text-center md:px-20 md:py-2 px-2'>{item.site}</td>
+                                        <td className='text-center md:px-20 md:py-2 px-2'>{item.username}</td>
+                                        <td className='text-center md:px-20 md:py-2 px-2'>{item.password}</td>
+                                        <td className='text-center flex gap-3 md:px-20 md:py-2 px-2'>
+                                            <lord-icon onClick={handleEdit} className="cursor-pointer"
+                                                src="https://cdn.lordicon.com/exymduqj.json"
+                                                trigger="hover"
+                                                style={{ "width": "25px", "height": "25px" }}>
+                                            </lord-icon>
+                                            <lord-icon onClick={handleDelete} className="cursor-pointer"
+                                                src="https://cdn.lordicon.com/jzinekkv.json"
+                                                trigger="hover"
+                                                style={{ "width": "25px", "height": "25px" }}>
+                                            </lord-icon>
+                                        </td>
                                     </tr>
                                 })}
                             </tbody>
