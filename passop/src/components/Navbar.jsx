@@ -12,7 +12,7 @@ const Navbar = () => {
 
             <div className="github-btn">
                 <button className='font-bold gap-2 flex justify-center items-center rounded-full p-2 cursor-pointer hover:bg-slate-800 border-2'>
-                    <img className='w-7 invert' src="/public/github.svg" alt="github-logo" />
+                    <img className='w-7 invert' src="github.svg" alt="github-logo" />
                     GitHub
                 </button>
             </div>
