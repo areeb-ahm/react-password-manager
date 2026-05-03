@@ -75,7 +75,7 @@ const Manager = () => {
 
                     <div className="rest-inputs flex justify-center items-center gap-2">
                         <input value={form.username} name='username' onChange={handleForm} className='bg-slate-300 border-4 border-slate-900 w-full px-2 py-1 rounded-full' type="text" placeholder='Enter username...' />
-                        <input ref={pass} value={form.password} name='password' onChange={handleForm} className='bg-slate-300 border-4 border-slate-900 w-full px-2 py-1 rounded-full' type="text" placeholder='Enter password...' />
+                        <input ref={pass} value={form.password} name='password' onChange={handleForm} className='bg-slate-300 border-4 border-slate-900 w-full px-2 py-1 rounded-full' type="password" placeholder='Enter password...' />
                         <span onClick={handleEye} className='absolute right-134 cursor-pointer'>
                             <img ref={eyeRef} width={25} src="eye.svg" alt="show-password" />
                         </span>
